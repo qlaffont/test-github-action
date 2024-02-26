@@ -23,14 +23,14 @@ jobs:
       id: changelog
       uses: TriPSs/conventional-changelog-action@v5
       with:
-        github-token: ${{ secrets.github_token }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: "false"
 
     - name: Create Release
       uses: actions/create-release@v1
       if: ${{ steps.changelog.outputs.skipped == 'false' }}
       env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: "${{ steps.changelog.outputs.tag }}-$BRANCH"
         release_name: $BRANCH - ${{ steps.changelog.outputs.tag }}
