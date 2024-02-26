@@ -26,6 +26,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: "false"
         version-file: ${{env.BRANCH == 'gay' && './gay-version.json' || './package.json'}}
+        skip-tag: ${{env.BRANCH == 'gay' && 'false' || 'true'}}
 
     - name: Create Release
       uses: actions/create-release@v1
