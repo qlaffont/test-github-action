@@ -25,7 +25,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: "false"
-        version-file: ${{env.BRANCH == 'gay' && './gay-version.json' || './package.json'}}
         pre-release: ${{env.BRANCH == 'gay' && 'true' || 'false'}}
 
     - name: Create Release
