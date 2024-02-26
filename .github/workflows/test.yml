@@ -32,6 +32,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "${{ steps.changelog.outputs.tag }}-$BRANCH"
-        release_name: $BRANCH - ${{ steps.changelog.outputs.tag }}
+        tag_name: "${{ steps.changelog.outputs.tag }}-${{env.BRANCH}}"
+        release_name: ${{env.BRANCH}} - ${{ steps.changelog.outputs.tag }}
         body: ${{ steps.changelog.outputs.clean_changelog }}
