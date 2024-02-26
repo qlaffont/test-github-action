@@ -8,4 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
-        uses: lab42/conventional-commit@main
+        uses: beemojs/conventional-pr-action@v2
+        with:
+          config-preset: angular
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
