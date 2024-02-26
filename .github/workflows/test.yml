@@ -25,7 +25,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: "false"
-        skip-version-file: ${{env.BRANCH == 'gay' && 'true' || 'false'}}
+        version-file: ${{env.BRANCH == 'gay' && './gay-version.json' || './package.json'}}
 
     - name: Create Release
       uses: actions/create-release@v1
@@ -33,6 +33,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "${{ steps.changelog.outputs.tag }}-${{env.BRANCH}}"
-        release_name: ${{env.BRANCH}} - ${{ steps.changelog.outputs.tag }}
+        tag_name: "${{ env.BRANCH == 'gay' && env.RELEASE_DATE || steps.changelog.outputs.tag }}-${{env.BRANCH}}"
+        release_name: ${{env.BRANCH}} - ${{ env.BRANCH == 'gay' && env.RELEASE_DATE || steps.changelog.outputs.tag }}
         body: ${{ steps.changelog.outputs.clean_changelog }}
