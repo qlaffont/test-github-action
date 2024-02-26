@@ -1,0 +1,37 @@
+name: Release static assets
+
+env:
+  PROJECT_NAME: 'demo'
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["develop", "gay", "main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v5
+      with:
+        github-token: ${{ secrets.github_token }}
+        output-file: "false"
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        tag_name: "${{ steps.changelog.outputs.tag }}-$BRANCH"
+        release_name: $BRANCH - ${{ steps.changelog.outputs.tag }}
+        body: ${{ steps.changelog.outputs.clean_changelog }}
