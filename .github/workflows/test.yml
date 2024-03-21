@@ -50,6 +50,12 @@ jobs:
         release_name: ${{env.BRANCH}} - ${{ steps.changelog.outputs.tag }}
         body: ${{ env.EDITED_CHANGELOG }}
 
+    - name: Convert Markdown to Slack Markdown
+      uses: LoveToKnow/slackify-markdown-action@v1.0.2
+      id: slackMarkdown
+      with:
+        text: ${{ env.EDITED_CHANGELOG }}
+
     - name: Post to a Slack channel
       id: slack
       uses: slackapi/slack-github-action@v1.25.0
@@ -74,7 +80,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "${{ env.EDITED_CHANGELOG }}"
+                  "text": "${{ steps.slackMarkdown.outputs.text }}"
                 }
               },
               {
