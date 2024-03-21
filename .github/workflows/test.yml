@@ -26,13 +26,70 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: "false"
         pre-release: ${{env.BRANCH == 'gay' && 'true' || 'false'}}
+    
+    - name: Edit generated changelog
+      shell: bash
+      run: echo "EDITED_CHANGELOG=$(echo '${{steps.changelog.outputs.clean_changelog}}' | sed -E 's/MFM-([0-9]+)/\[&\]\(https:\/\/linear.app\/madeformed\/issue\/\1\)/g')" >> $GITHUB_ENV
 
     - name: Create Release
       uses: actions/create-release@v1
+      id: release
       if: ${{ steps.changelog.outputs.skipped == 'false' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: "${{ steps.changelog.outputs.tag }}"
         release_name: ${{env.BRANCH}} - ${{ steps.changelog.outputs.tag }}
-        body: ${{ steps.changelog.outputs.clean_changelog }}
+        body: ${{ env.EDITED_CHANGELOG }}
+
+    - name: Post to a Slack channel
+      id: slack
+      uses: slackapi/slack-github-action@v1.25.0
+      with:
+        # Slack channel id, channel name, or user id to post message.
+        # See also: https://api.slack.com/methods/chat.postMessage#channels
+        channel-id: 'it'
+        # For posting a rich message using Block Kit
+        payload: |
+          {
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🔥 New version - ${{ steps.changelog.outputs.tag }}"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ env.EDITED_CHANGELOG }}"
+                }
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": " "
+                },
+                "accessory": {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "See on Github",
+                    "emoji": true
+                  },
+                  "value": "click_me_123",
+                  "url": "${{ steps.release.outputs.html_url }}",
+                  "action_id": "button-action"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        
