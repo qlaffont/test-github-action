@@ -30,7 +30,9 @@ jobs:
     - name: Edit generated changelog
       shell: bash
       run: | 
-        echo "EDITED_CHANGELOG=$(echo \"${{steps.changelog.outputs.clean_changelog}}\" | sed -E 's/MFM-([0-9]+)/\[&\]\(https:\/\/linear.app\/madeformed\/issue\/\1\)/g')" >> $GITHUB_ENV
+        CURRENT_CHANGELOG="${{steps.changelog.outputs.clean_changelog}}"
+        EDITED_CHANGELOG=$(sed -E 's/MFM-([0-9]+)/\[&\]\(https:\/\/linear.app\/madeformed\/issue\/\1\)/g') <<< $CURRENT_CHANGELOG)
+        echo "EDITED_CHANGELOG=$EDITED_CHANGELOG" >> $GITHUB_ENV
 
     - name: Create Release
       uses: actions/create-release@v1
