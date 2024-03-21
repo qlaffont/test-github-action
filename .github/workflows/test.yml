@@ -57,6 +57,7 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
+            "text": " ",
             "blocks": [
               {
                 "type": "header",
