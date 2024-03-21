@@ -53,6 +53,7 @@ jobs:
     - name: Convert Markdown to Slack Markdown
       uses: LoveToKnow/slackify-markdown-action@v1.0.2
       id: slackMarkdown
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       with:
         text: ${{ env.EDITED_CHANGELOG }}
 
