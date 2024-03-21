@@ -32,11 +32,11 @@ jobs:
       env:
           CURRENT_CHANGELOG: ${{steps.changelog.outputs.clean_changelog}}
       run: | 
-        echo $CURRENT_CHANGELOG
-        EDITED_CHANGELOG=$(sed -E 's/MFM-([0-9]+)/\[&\]\(https:\/\/linear.app\/madeformed\/issue\/\1\)/g' <<< $CURRENT_CHANGELOG)
-        echo $EDITED_CHANGELOG
+        echo "${CURRENT_CHANGELOG}"
+        EDITED_CHANGELOG=$(sed -E 's/MFM-([0-9]+)/\[&\]\(https:\/\/linear.app\/madeformed\/issue\/\1\)/g' <<< "${CURRENT_CHANGELOG}")
+        echo "${EDITED_CHANGELOG}"
         echo "EDITED_CHANGELOG<<EOF" >> $GITHUB_ENV
-        echo $EDITED_CHANGELOG >> $GITHUB_ENV 
+        echo "${EDITED_CHANGELOG}" >> $GITHUB_ENV 
         echo "EOF" >> $GITHUB_ENV
 
     - name: Create Release
