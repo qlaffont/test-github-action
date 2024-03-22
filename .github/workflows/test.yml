@@ -37,6 +37,7 @@ jobs:
         echo "${EDITED_CHANGELOG}"
         echo "EDITED_CHANGELOG<<EOF" >> $GITHUB_ENV
         echo "${EDITED_CHANGELOG}" >> $GITHUB_ENV 
+        echo "Aliqua sit ad id ex mollit commodo anim ad reprehenderit enim consequat esse elit nulla. Qui ex aliqua consectetur qui sint qui sunt do. Aute minim sint commodo labore eiusmod exercitation.Incididunt cupidatat enim et dolore aliquip est sint enim. Laboris duis non commodo culpa culpa. Mollit veniam Lorem consequat amet aliquip excepteur aute laboris culpa veniam proident. Laboris dolore in sit eiusmod consequat culpa amet veniam. Dolore cupidatat tempor pariatur do dolore incididunt qui quis proident cillum dolor. Laboris do elit ullamco cupidatat.Deserunt minim proident fugiat mollit duis tempor qui minim magna commodo. Consequat consectetur do consequat culpa. Ullamco excepteur ad occaecat reprehenderit laboris dolor sit amet dolor cupidatat laborum in.Do Lorem in labore veniam ut culpa irure eiusmod dolore. Est laborum dolor laborum ullamco cillum consequat magna id. Enim aliquip aliqua fugiat sint sit elit consectetur esse velit et incididunt magna voluptate excepteur. Enim ipsum do mollit dolore duis duis esse ullamco. Qui non sint nisi nisi aliquip excepteur pariatur incididunt voluptate pariatur eiusmod dolore est et. Amet nulla deserunt id tempor velit.Dolor ea ut ex officia culpa in proident nulla ullamco. Irure eiusmod ut sint ex ullamco sunt. Commodo Lorem laborum nulla reprehenderit. Eiusmod do amet eiusmod sit anim. Laboris ad consequat pariatur nisi magna in consequat velit laboris est cupidatat consectetur in ipsum. Dolore sunt elit reprehenderit occaecat est est magna aliqua velit consequat.Adipisicing in nostrud duis labore tempor sint anim tempor cupidatat nulla anim ad anim. Excepteur Lorem velit reprehenderit incididunt id. Pariatur Lorem aliquip minim id Lorem esse consectetur aliquip voluptate voluptate ipsum. Commodo ad esse consequat nisi.Tempor minim eiusmod eu nisi esse occaecat. Qui consectetur mollit laborum occaecat duis sit sit velit ipsum amet aliqua. Veniam incididunt nulla aliquip elit laboris sit sunt et. Minim est magna deserunt pariatur.Ea laborum ad do adipisicing laborum do minim velit amet cupidatat aliqua excepteur. Sint culpa excepteur sunt Lorem enim adipisicing duis. Excepteur do irure mollit adipisicing nisi quis eiusmod laboris enim velit exercitation ea. Ipsum deserunt dolore exercitation est irure officia ipsum nulla consectetur.Est adipisicing labore sunt duis laboris. Nulla ut ea consectetur exercitation adipisicing. Id pariatur enim ea est. Esse aliquip do ad sunt eu eiusmod.Veniam proident veniam voluptate reprehenderit mollit qui officia aliqua et officia ut. Exercitation ex proident ipsum et pariatur ad enim nulla ut voluptate excepteur ad. Ea enim elit ipsum aute velit magna velit laboris anim magna ad ex sit amet. Ea cupidatat magna deserunt reprehenderit et excepteur. Tempor commodo voluptate irure irure tempor in voluptate amet anim incididunt duis tempor velit." >> $GITHUB_ENV 
         echo "EOF" >> $GITHUB_ENV
 
     - name: Create Release
@@ -53,6 +54,7 @@ jobs:
     - name: Convert Markdown to Slack Markdown
       uses: LoveToKnow/slackify-markdown-action@v1.0.2
       id: slackMarkdown
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       with:
         text: ${{ env.EDITED_CHANGELOG }}
 
@@ -67,22 +69,8 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
-            "text": " ",
+            "text": "${{ env.BRANCH == 'gay' && 'ℹ️ New GAY' || '🔥 New PRODUCTION'}} version - ${{ steps.changelog.outputs.tag }} \n\n ${{ steps.slackMarkdown.outputs.text }}",
             "blocks": [
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": "🔥 New version - ${{ steps.changelog.outputs.tag }}"
-                }
-              },
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "${{ steps.slackMarkdown.outputs.text }}"
-                }
-              },
               {
                 "type": "divider"
               },
