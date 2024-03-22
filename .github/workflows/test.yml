@@ -58,7 +58,7 @@ jobs:
       with:
         text: ${{ env.EDITED_CHANGELOG }}
 
-    - name: Post to a Slack channel
+    - name: Post to a Slack channele 
       id: slack
       uses: slackapi/slack-github-action@v1.25.0
       if: ${{ steps.changelog.outputs.skipped == 'false' }}
